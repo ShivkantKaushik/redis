@@ -42,6 +42,8 @@ public class StreamsDao {
 
 
             //with each entry(timestamp-sequence), there is one map, this map can have many key value pairs, that we add
+            //this is one message of redis stream, means one message can have many key value pairs like a json
+            //then when we read, we get list of maprecord, one maprecord for each message
             Map<String, Object> dataToPush1 = new HashMap<>(){{
                 put("name", "abc");
                 put("abc-age", 15);
@@ -84,7 +86,7 @@ public class StreamsDao {
 
 
 
-            //        streamOps.range(STREAM_NAME, "0", "+"); // Fetch all messages
+            //       redisTemplate.opsForStream().range(STREAM_NAME, "0", "+"); // Fetch all messages
             //        streamOps.range(STREAM_NAME, "1682851200000-0", "1682851300000-0"); // Fetch messages within a specific range
 
             //with each entry(timestamp-sequence), there is one map, this map can have many key value pairs, that we add
@@ -302,7 +304,13 @@ public class StreamsDao {
 
                     }
 
+
+                    //for acknowledging, explore this
+                    redisTemplate.opsForStream().acknowledge(KEY2,mapRecord);
+
                 }
+
+
 
             }
 
@@ -406,7 +414,8 @@ public class StreamsDao {
 
     private void setOps(){
 //        redisTemplate.opsForSet().add();
-//        redisTemplate.opsForSet().intersect();
+     //   redisTemplate.opsForSet().intersect("sd","df");
+    //    redisTemplate.opsForSet().members("key"); to retrieve
 //        redisTemplate.opsForSet().difference();
 //        redisTemplate.opsForSet().size();
 //        redisTemplate.opsForSet().remove();
